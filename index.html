@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .carousel {
+        position: relative;
+        width: 80%;
+        height: 600px;
+        margin: auto;
+        overflow: hidden;
+      }
+      .slides {
+        position: absolute;
+        display: flex;
+        transition: transform 0.3s ease-in-out;
+      }
+      .slides img {
+        width: 100%;
+        height: 600px;
+      }
+      .btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+        font-size: 2rem;
+        font-weight: bold;
+        background-color: transparent;
+        border: none;
+      }
+      .btn-prev {
+        left: 0;
+      }
+      .btn-next {
+        right: 0;
+      }
+      .manual-buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+      }
+      .manual-btn {
+        width: 20px;
+        height: 20px;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        background-color: rgba(195, 175, 175, 0.945);
+      }
+      .manual-btn-active {
+        background-color: #0cdefe;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carousel">
+      <div class="slides">
+        <img src="banner1.png" alt="Image 1" />
+        <img src="banner2.png" alt="Image 2" />
+        <img src="banner3.png" alt="Image 3" />
+        <img src="slider-1.jpg" alt="Image 4" />
+        <img src="slider-2.jpg" alt="Image 5" />
+        <img src="slider-3.jpg" alt="Image 6" />
+      </div>
+      <button class="btn btn-prev">&#8249;</button>
+      <button class="btn btn-next">&#8250;</button>
+      <div class="manual-buttons">
+        <button class="manual-btn" data-index="0"></button>
+        <button class="manual-btn" data-index="1"></button>
+        <button class="manual-btn" data-index="2"></button>
+        <button class="manual-btn" data-index="3"></button>
+        <button class="manual-btn" data-index="4"></button>
+        <button class="manual-btn" data-index="5"></button>
+      </div>
+    </div>
+
+    <script>
+      const carousel = document.querySelector(".carousel");
+      const slides = document.querySelector(".slides");
+      const prevButton = document.querySelector(".btn-prev");
+      const nextButton = document.querySelector(".btn-next");
+      const manualButtons = document.querySelectorAll(".manual-btn");
+      const images = document.querySelectorAll(".slides img");
+
+      let index = 0;
+
+      function startCarousel() {
+        interval = setInterval(() => {
+          slides.style.transform = `translateX(-${index * 100}%)`;
+          index++;
+          if (index === images.length) {
+            index = 0;
+          }
+          setActiveButton();
+        }, 3000);
+      }
+
+      function stopCarousel() {
+        clearInterval(interval);
+      }
+
+      function setActiveButton() {
+        manualButtons.forEach((button, i) => {
+          if (i === index) {
+            button.classList.add("manual-btn-active");
+          } else {
+            button.classList.remove("manual-btn-active");
+          }
+        });
+      }
+
+      function manualButtonClick() {
+        index = parseInt(this.dataset.index);
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        stopCarousel();
+        startCarousel();
+      }
+
+      startCarousel();
+
+      prevButton.addEventListener("click", () => {
+        stopCarousel();
+        index--;
+        if (index < 0) {
+          index = images.length - 1;
+        }
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        setActiveButton();
+        startCarousel();
+      });
+
+      nextButton.addEventListener("click", () => {
+        stopCarousel();
+        index++;
+        if (index === images.length) {
+          index = 0;
+        }
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        setActiveButton();
+        startCarousel();
+      });
+
+      manualButtons.forEach((button) => {
+        button.addEventListener("click", manualButtonClick);
+      });
+    </script>
+  </body>
+</html>
